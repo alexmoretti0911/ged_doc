@@ -61,7 +61,7 @@
       }
 
       data.forEach(item => {
-        const url = "https://skjednebhvcgvyxsforl.storage.supabase.co/storage/v1/s3" + item.name;
+        const url = SUPABASE_URL + "/storage/v1/s3/" + item.name; 
 
         const li = document.createElement("li");
         li.innerHTML = `<a href="${url}" target="_blank">${item.name}</a>`;
