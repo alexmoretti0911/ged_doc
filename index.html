@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Armazenamento de Arquivos</title>
+</head>
+<body>
+
+<h1>Empresa - Arquivos</h1>
+
+<input type="file" id="arquivo">
+<button onclick="enviar()">Enviar</button>
+
+<ul id="lista"></ul>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+  const SUPABASE_URL = "https://skjednebhvcgyyxssforl.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_ZEToUIXt08lGBOu8uomDtg_rx8A3ifi";
+
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function enviar() {
+    const file = document.getElementById("arquivo").files[0];
+
+    const { data, error } = await supabase.storage
+      .from('arquivos')
+      .upload(file.name, file);
+
+    if (error) {
+      alert("Erro ao enviar!");
+    } else {
+      alert("Arquivo enviado!");
+      listar();
+    }
+  }
+
+  async function listar() {
+    const { data } = await supabase.storage
+      .from('arquivos')
+      .list();
+
+    const lista = document.getElementById("lista");
+    lista.innerHTML = "";
+
+    data.forEach(item => {
+      const url = SUPABASE_URL + "/storage/v1/object/public/arquivos/" + item.name;
+
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="${url}" target="_blank">${item.name}</a>`;
+      lista.appendChild(li);
+    });
+  }
+
+  listar();
+</script>
+
+</body>
+</html>
